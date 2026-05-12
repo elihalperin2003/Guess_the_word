@@ -6,4 +6,8 @@ def get_random_word():
     return words[random.randint(0, len(words) - 1)]
 
 
-print(get_random_word())
+def check_letters(corect_word, guess_letter):
+    for letter in corect_word:
+        if letter == guess_letter:
+            return True
+    return False
