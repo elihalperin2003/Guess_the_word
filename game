@@ -1,0 +1,9 @@
+import random
+
+
+def get_random_word():
+    words = ["a", "bb", "ccc"]
+    return words[random.randint(0, len(words) - 1)]
+
+
+print(get_random_word())
