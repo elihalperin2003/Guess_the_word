@@ -1,16 +1,6 @@
 import random
 
 words = [
-    "tea",
-    "pie",
-    "egg",
-    "milk",
-    "rice",
-    "soup",
-    "cake",
-    "fish",
-    "meat",
-    "beer",
     "pizza",
     "pasta",
     "bread",
@@ -42,9 +32,9 @@ words = [
 class CurrentRound:
     """Represents a single round of a word-guessing game."""
 
-    def __init__(self):
+    def __init__(self, word):
         """Initialize a new round with a random word and default game state."""
-        self.correct_word = random.choice(words)
+        self.correct_word = word
         self.guess_word = "_" * len(self.correct_word)
         self.garbage = []
         self.attempts = 8
@@ -65,7 +55,8 @@ class CurrentRound:
 def main():
     game_active = True
     while game_active:
-        game = CurrentRound()
+        new_word = random.choice(words)
+        game = CurrentRound(new_word)
         while game.correct_word != game.guess_word and game.attempts != 0:
             print_details(game)
             guess_letter = input_letter(game.garbage, game.guess_word)
