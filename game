@@ -7,6 +7,7 @@ def main():
     garbage = []
     attempts = 8
     while corect_word != guess_word:
+        print_detales(guess_word, garbage, attempts)
         guess_letter = input_letter()
         check = check_letters(corect_word, guess_letter)
         pass
@@ -17,7 +18,7 @@ def get_random_word():
     return words[random.randint(0, len(words) - 1)]
 
 
-def prinr_detales(guess_word, garbage: list, attempts):
+def print_detales(guess_word, garbage: list, attempts):
     print()
     print("Guess the word:")
     print(guess_word)
@@ -40,7 +41,8 @@ def input_letter():
 
 
 def check_letters(corect_word, guess_letter):
-    for letter in corect_word:
+    """Returns the letter's index if it exists in the word, otherwise False."""
+    for index, letter in enumerate(corect_word):
         if letter == guess_letter:
-            return True
-    return False
+            return index
+    return "not found"
