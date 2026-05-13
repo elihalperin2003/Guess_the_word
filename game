@@ -5,6 +5,7 @@ def main():
     corect_word = get_random_word()
     guess_word = "_" * len(corect_word)
     garbage = []
+    attempts = 8
     while corect_word != guess_word:
         guess_letter = input_letter()
         check = check_letters(corect_word, guess_letter)
@@ -14,6 +15,14 @@ def main():
 def get_random_word():
     words = ["a", "bb", "ccc"]
     return words[random.randint(0, len(words) - 1)]
+
+
+def prinr_detales(guess_word, garbage: list, attempts):
+    print()
+    print("Guess the word:")
+    print(guess_word)
+    print(f"Garbage: {[letter for letter in garbage]}")
+    print(f"Attempts left: {attempts}")
 
 
 def input_letter():
