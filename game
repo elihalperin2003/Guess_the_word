@@ -1,50 +1,85 @@
 import random
 
+words = [
+    "tea",
+    "pie",
+    "egg",
+    "milk",
+    "rice",
+    "soup",
+    "cake",
+    "fish",
+    "meat",
+    "beer",
+    "pizza",
+    "pasta",
+    "bread",
+    "apple",
+    "juice",
+    "steak",
+    "salad",
+    "water",
+    "mango",
+    "burger",
+    "coffee",
+    "cheese",
+    "banana",
+    "cookie",
+    "yogurt",
+    "potato",
+    "butter",
+    "chicken",
+    "pancake",
+    "popcorn",
+    "avocado",
+    "lasagna",
+    "lemonade",
+    "sandwich",
+    "chocolate",
+]
 
-class Current_round:
+
+class CurrentRound:
+    """Represents a single round of a word-guessing game."""
+
     def __init__(self):
-        self.correct_word = get_random_word()
+        """Initialize a new round with a random word and default game state."""
+        self.correct_word = random.choice(words)
         self.guess_word = "_" * len(self.correct_word)
         self.garbage = []
         self.attempts = 8
 
     def handle_wrong_guess(self, guess_letter):
+        """Update the game state for an incorrect letter guess."""
         self.garbage.append(guess_letter)
         self.attempts -= 1
 
     def handle_correct_guess(self, guess_letter, indexes):
+        """Reveal the correctly guessed letter at the specified positions."""
         list_guess_letters = list(self.guess_word)
         for ind in indexes:
             list_guess_letters[ind] = guess_letter
         self.guess_word = "".join(list_guess_letters)
 
-    def print_detales(self):
-        print()
-        print("===================")
-        print()
-        print("Guess the word:")
-        print(f"\033[34m{self.guess_word}\033[0m")
-        print(f"Garbage: {" - ".join(self.garbage)}")
-        print(f"Attempts left: {self.attempts}")
-        print()
-
 
 def main():
     game_active = True
     while game_active:
-        game = Current_round()
+        game = CurrentRound()
         while game.correct_word != game.guess_word and game.attempts != 0:
-            game.print_detales()
-            guess_letter = input_letter(game.garbage)
+            print_details(game)
+            guess_letter = input_letter(game.garbage, game.guess_word)
             indexes = check_letter(game.correct_word, guess_letter)
-            if indexes == "not found":
-                game.handle_wrong_guess(guess_letter)
-            else:
+            if indexes:
                 game.handle_correct_guess(guess_letter, indexes)
+            else:
+                game.handle_wrong_guess(guess_letter)
         if game.correct_word == game.guess_word:
-            print(f"\nYou did it!\nThe word is {game.correct_word}")
+            print(f"\nYou did it!\nThe word is \033[34m{game.correct_word}\033[0m")
         elif game.attempts == 0:
-            print(f"\nGame over!\nThe correct word is {game.correct_word}")
+            print(
+                f"\nGame over!\nThe correct word is \033[34m{game.correct_word}\033[0m"
+            )
         exit_game = input(
             "To play another game, press Enter. to exit, press any other key:\n "
         )
@@ -52,50 +87,28 @@ def main():
             game_active = False
 
 
-def get_random_word():
-    words = [
-        "dog",
-        "sky",
-        "cup",
-        "pen",
-        "red",
-        "ball",
-        "tree",
-        "fast",
-        "gold",
-        "jump",
-        "bread",
-        "mouse",
-        "beach",
-        "clock",
-        "smile",
-        "winter",
-        "rocket",
-        "forest",
-        "orange",
-        "banana",
-        "window",
-        "teacher",
-        "kitchen",
-        "picture",
-        "morning",
-        "mountain",
-        "birthday",
-        "hospital",
-        "elephant",
-        "sandwich",
-        "chocolate",
-    ]
-    return random.choice(words)
+def print_details(game):
+    print()
+    print("===================")
+    print()
+    print("Guess the word:")
+    print(f"\033[34m{game.guess_word}\033[0m")
+    print(f"Garbage: {" - ".join(game.garbage)}")
+    print(f"Attempts left: {game.attempts}")
+    print()
 
 
-def input_letter(garbage):
+def input_letter(garbage: list, guess_word: str):
     """Prompts for a single English letter, repeating until valid. Returns the input as a lowercase string."""
     right_input = False
     while not right_input:
         letter = input("enter letter: ")
         letter = letter.lower()
-        if not "a" <= letter <= "z" or len(letter) != 1 or letter in garbage:
+        if (
+            not "a" <= letter <= "z"
+            or len(letter) != 1
+            or letter in garbage + list(guess_word)
+        ):
             print("Incorrect input, please type again")
             continue
         else:
@@ -109,9 +122,8 @@ def check_letter(correct_word, guess_letter):
     for index, letter in enumerate(correct_word):
         if letter == guess_letter:
             indexes.append(index)
-    if not indexes:
-        return "not found"
     return indexes
 
 
-main()
+if __name__ == "__main__":
+    main()
