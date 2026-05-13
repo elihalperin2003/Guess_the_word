@@ -6,6 +6,20 @@ def get_random_word():
     return words[random.randint(0, len(words) - 1)]
 
 
+def input_letter():
+    """Prompts for a single English letter, repeating until valid. Returns the input as a lowercase string."""
+    right_input = False
+    while not right_input:
+        letter = input("enter letter: ")
+        letter = letter.lower()
+        if not "a" <= letter <= "z" or len(letter) != 1:
+            print("Incorrect input, please type again")
+            continue
+        else:
+            right_input = True
+    return letter
+
+
 def check_letters(corect_word, guess_letter):
     for letter in corect_word:
         if letter == guess_letter:
