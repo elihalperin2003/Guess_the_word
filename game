@@ -8,50 +8,94 @@ class Current_round:
         self.garbage = []
         self.attempts = 8
 
+    def handle_wrong_guess(self, guess_letter):
+        self.garbage.append(guess_letter)
+        self.attempts -= 1
+
+    def handle_correct_guess(self, guess_letter, indexes):
+        list_guess_letters = list(self.guess_word)
+        for ind in indexes:
+            list_guess_letters[ind] = guess_letter
+        self.guess_word = "".join(list_guess_letters)
+
+    def print_detales(self):
+        print()
+        print("===================")
+        print()
+        print("Guess the word:")
+        print(f"\033[34m{self.guess_word}\033[0m")
+        print(f"Garbage: {" - ".join(self.garbage)}")
+        print(f"Attempts left: {self.attempts}")
+        print()
+
 
 def main():
     game_active = True
     while game_active:
         game = Current_round()
-        while game.correct_word != game.guess_word or game.attempts != 0:
-            print_detales(game.guess_word, game.garbage, game.attempts)
-            guess_letter = input_letter()
-            index = check_letter(game.correct_word, guess_letter)
-            if index == "not found":
-                handle_wrong_guess(game.garbage, guess_letter, game.attempts)
+        while game.correct_word != game.guess_word and game.attempts != 0:
+            game.print_detales()
+            guess_letter = input_letter(game.garbage)
+            indexes = check_letter(game.correct_word, guess_letter)
+            if indexes == "not found":
+                game.handle_wrong_guess(guess_letter)
             else:
-                handle_correct_guess(game.correct_word, guess_letter, index)
+                game.handle_correct_guess(guess_letter, indexes)
         if game.correct_word == game.guess_word:
-            print(f"You did it!\nThe word is {game.correct_word}")
+            print(f"\nYou did it!\nThe word is {game.correct_word}")
         elif game.attempts == 0:
-            print(f"Game over!\nThe correct word is {game.correct_word}")
+            print(f"\nGame over!\nThe correct word is {game.correct_word}")
         exit_game = input(
-            "To play another game, press Enter. to exit, press any other key"
+            "To play another game, press Enter. to exit, press any other key:\n "
         )
         if exit_game:
             game_active = False
 
 
 def get_random_word():
-    words = ["a", "bb", "ccc"]
-    return words[random.randint(0, len(words) - 1)]
+    words = [
+        "dog",
+        "sky",
+        "cup",
+        "pen",
+        "red",
+        "ball",
+        "tree",
+        "fast",
+        "gold",
+        "jump",
+        "bread",
+        "mouse",
+        "beach",
+        "clock",
+        "smile",
+        "winter",
+        "rocket",
+        "forest",
+        "orange",
+        "banana",
+        "window",
+        "teacher",
+        "kitchen",
+        "picture",
+        "morning",
+        "mountain",
+        "birthday",
+        "hospital",
+        "elephant",
+        "sandwich",
+        "chocolate",
+    ]
+    return random.choice(words)
 
 
-def print_detales(guess_word, garbage: list, attempts):
-    print()
-    print("Guess the word:")
-    print(guess_word)
-    print(f"Garbage: {[letter for letter in garbage]}")
-    print(f"Attempts left: {attempts}")
-
-
-def input_letter():
+def input_letter(garbage):
     """Prompts for a single English letter, repeating until valid. Returns the input as a lowercase string."""
     right_input = False
     while not right_input:
         letter = input("enter letter: ")
         letter = letter.lower()
-        if not "a" <= letter <= "z" or len(letter) != 1:
+        if not "a" <= letter <= "z" or len(letter) != 1 or letter in garbage:
             print("Incorrect input, please type again")
             continue
         else:
@@ -60,17 +104,14 @@ def input_letter():
 
 
 def check_letter(correct_word, guess_letter):
-    """Returns the letter's index if it exists in the word, otherwise False."""
+    """Returns the letter's index(es) if it exists in the word, otherwise "not found"."""
+    indexes = []
     for index, letter in enumerate(correct_word):
         if letter == guess_letter:
-            return index
-    return "not found"
+            indexes.append(index)
+    if not indexes:
+        return "not found"
+    return indexes
 
 
-def handle_wrong_guess(garbage: list, guess_letter, attempts):
-    garbage.append(guess_letter)
-    attempts -= 1
-
-
-def handle_correct_guess(correct_word, guess_letter, index):
-    correct_word[index] = guess_letter
+main()
