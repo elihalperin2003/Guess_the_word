@@ -1,16 +1,35 @@
 import random
 
 
+class Current_round:
+    def __init__(self):
+        self.correct_word = get_random_word()
+        self.guess_word = "_" * len(self.correct_word)
+        self.garbage = []
+        self.attempts = 8
+
+
 def main():
-    corect_word = get_random_word()
-    guess_word = "_" * len(corect_word)
-    garbage = []
-    attempts = 8
-    while corect_word != guess_word:
-        print_detales(guess_word, garbage, attempts)
-        guess_letter = input_letter()
-        check = check_letters(corect_word, guess_letter)
-        pass
+    game_active = True
+    while game_active:
+        game = Current_round()
+        while game.correct_word != game.guess_word or game.attempts != 0:
+            print_detales(game.guess_word, game.garbage, game.attempts)
+            guess_letter = input_letter()
+            index = check_letter(game.correct_word, guess_letter)
+            if index == "not found":
+                handle_wrong_guess(game.garbage, guess_letter, game.attempts)
+            else:
+                handle_correct_guess(game.correct_word, guess_letter, index)
+        if game.correct_word == game.guess_word:
+            print(f"You did it!\nThe word is {game.correct_word}")
+        elif game.attempts == 0:
+            print(f"Game over!\nThe correct word is {game.correct_word}")
+        exit_game = input(
+            "To play another game, press Enter. to exit, press any other key"
+        )
+        if exit_game:
+            game_active = False
 
 
 def get_random_word():
@@ -40,9 +59,18 @@ def input_letter():
     return letter
 
 
-def check_letters(corect_word, guess_letter):
+def check_letter(correct_word, guess_letter):
     """Returns the letter's index if it exists in the word, otherwise False."""
-    for index, letter in enumerate(corect_word):
+    for index, letter in enumerate(correct_word):
         if letter == guess_letter:
             return index
     return "not found"
+
+
+def handle_wrong_guess(garbage: list, guess_letter, attempts):
+    garbage.append(guess_letter)
+    attempts -= 1
+
+
+def handle_correct_guess(correct_word, guess_letter, index):
+    correct_word[index] = guess_letter
