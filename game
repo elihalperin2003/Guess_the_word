@@ -1,6 +1,16 @@
 import random
 
 
+def main():
+    corect_word = get_random_word()
+    guess_word = "_" * len(corect_word)
+    garbage = []
+    while corect_word != guess_word:
+        guess_letter = input_letter()
+        check = check_letters(corect_word, guess_letter)
+        pass
+
+
 def get_random_word():
     words = ["a", "bb", "ccc"]
     return words[random.randint(0, len(words) - 1)]
